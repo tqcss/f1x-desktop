@@ -12,23 +12,21 @@ public class Main extends Application {
         @Override
         public void start(Stage primaryStage) {
                 WebView webView = new WebView();
-                webView.getEngine().load("http://localhost:8080/home"); // Load the initial website
+                webView.getEngine().load("http://localhost:5173");
 
                 StackPane root = new StackPane(webView);
-                Scene scene = new Scene(root); // Create scene without initial dimensions
+                Scene scene = new Scene(root);
 
-                primaryStage.setTitle("F1+X Desktop Application");
+                primaryStage.setTitle("F1+X: Laundry POS Application");
                 primaryStage.setScene(scene);
 
-                // Get the primary screen's visual bounds
                 Screen primaryScreen = Screen.getPrimary();
                 Rectangle2D bounds = primaryScreen.getVisualBounds();
 
-                // Set the stage to full screen based on the screen bounds
                 primaryStage.setX(bounds.getMinX());
                 primaryStage.setY(bounds.getMinY());
-                primaryStage.setWidth(bounds.getWidth());
-                primaryStage.setHeight(bounds.getHeight());
+                primaryStage.setWidth(800);
+                primaryStage.setHeight(500);
 
                 primaryStage.show();
         }
