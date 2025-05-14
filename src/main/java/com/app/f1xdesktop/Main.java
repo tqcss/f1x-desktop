@@ -12,7 +12,7 @@ public class Main extends Application {
         @Override
         public void start(Stage primaryStage) {
                 WebView webView = new WebView();
-                webView.getEngine().load("http://localhost:5173");
+                webView.getEngine().load("http://localhost:8080/register");
 
                 StackPane root = new StackPane(webView);
                 Scene scene = new Scene(root);
