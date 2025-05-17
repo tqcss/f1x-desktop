@@ -16,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Screen;
@@ -52,7 +51,6 @@ public class LayoutController implements Initializable {
     private final Screen primaryScreen = Screen.getPrimary();
     private final Rectangle2D screenBounds = primaryScreen.getVisualBounds();
 
-    private boolean isSceneColored = false;
     private boolean isMaximized = true;
 
     private Image fullScreenImage;
@@ -85,12 +83,6 @@ public class LayoutController implements Initializable {
         return stage;
     }
 
-    private void colorScene() {
-        if (isSceneColored) { return; }
-        isSceneColored = true;
-        getScene().setFill(Color.color(0.07058823529411765, 0.07058823529411765, 0.0784313725490196));
-    }
-
     private Image getFullscreenImage() {
         if (fullScreenImage != null) { return fullScreenImage; }
         fullScreenImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/static/images/fullscreen_icon.png")));
@@ -104,8 +96,6 @@ public class LayoutController implements Initializable {
 
     @FXML
     private void close(ActionEvent event) {
-        colorScene();
-
 //        if (isMaximized) {
 //            getStage().setMaximized(false);
 //            Screen primaryScreen = Screen.getPrimary();
@@ -186,7 +176,6 @@ public class LayoutController implements Initializable {
 
     @FXML
     private void minimize() {
-        colorScene();
 
         ParallelTransition parallelTransition = getParallelTransition();
         parallelTransition.setOnFinished(_ -> getStage().setIconified(true));

@@ -7,9 +7,12 @@ import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
@@ -40,9 +43,16 @@ public class F1xApplication extends Application {
                 primaryStage.setMaximized(true);
                 primaryStage.initStyle(StageStyle.UNDECORATED);
                 primaryStage.setScene(scene);
+                primaryStage.getScene().setFill(Color.color(0.07058823529411765, 0.07058823529411765, 0.0784313725490196));
+
+                Screen screen = Screen.getPrimary();
+                Rectangle2D bounds = screen.getVisualBounds();
+                root.setScaleX(800 / bounds.getWidth());
+                root.setScaleY(600 / bounds.getHeight());
 
                 primaryStage.show();
 
+                restoreStageState();
                 addMinimizedListener();
         }
 
