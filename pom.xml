@@ -78,12 +78,22 @@
                         <configuration>
                             <mainClass>com.app.f1xdesktop/com.app.f1xdesktop.F1xApplication</mainClass>
                             <launcher>app</launcher>
-                            <jlinkZipName>app</jlinkZipName>
-                            <jlinkImageName>app</jlinkImageName>
+                            <jlinkZipName>F1x Desktop</jlinkZipName>
+                            <jlinkImageName>F1x Desktop</jlinkImageName>
+                            <jlinkOptions>
+                                <option>--strip-debug</option>
+                                <option>--compress</option>
+                                <option>2</option>
+                            </jlinkOptions>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
                             <options>
+                                <jpackage>true</jpackage>
+                                <win-console>false</win-console>
+                                <win-shortcut>true</win-shortcut>
+                                <win-menu>true</win-menu>
+                                <win-upgrade-uuid>auto</win-upgrade-uuid>
                                 <option>--enable-native-access=javafx.graphics,javafx.web,javafx.media</option>
                             </options>
                         </configuration>
