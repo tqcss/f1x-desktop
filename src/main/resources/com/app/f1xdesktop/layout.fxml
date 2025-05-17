@@ -11,7 +11,7 @@
 <?import javafx.scene.web.WebView?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.app.f1xdesktop.LayoutController"
+      fx:controller="com.app.f1xdesktop.controller.LayoutController"
       fx:id="root">
 
     <BorderPane fx:id="titleBar" styleClass="titleBar" onMousePressed="#onTitlebarPressed" onMouseDragged="#onTitlebarDrag">
@@ -21,18 +21,14 @@
                 <Button styleClass="navButton" focusTraversable="false" fx:id="navPrev" onAction="#navigatePrev" disable="true">
                     <graphic>
                         <ImageView fitHeight="10" fitWidth="10">
-                            <image>
-                                <Image url="@/static/images/nav_prev.png" preserveRatio="false"/>
-                            </image>
+                            <Image url="@/static/images/nav_prev.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button styleClass="navButton" focusTraversable="false" fx:id="navNext" onAction="#navigateNext" disable="true">
                     <graphic>
                         <ImageView fitHeight="10" fitWidth="10">
-                            <image>
-                                <Image url="@/static/images/nav_next.png" preserveRatio="false"/>
-                            </image>
+                            <Image url="@/static/images/nav_next.png"/>
                         </ImageView>
                     </graphic>
                 </Button>
@@ -43,27 +39,21 @@
                 <Button fx:id="minimize" styleClass="titleButton" focusTraversable="false" onAction="#minimize">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
-                            <image>
-                                <Image url="@/static/images/minimize_icon.png" preserveRatio="true"/>
-                            </image>
+                            <Image url="@/static/images/minimize_icon.png" preserveRatio="true"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="maximize" styleClass="titleButton" focusTraversable="false" onAction="#toggleMaximize">
                     <graphic>
                         <ImageView fx:id="maximizeImageView" fitHeight="20" fitWidth="20">
-                            <image>
-                                <Image fx:id="maximizeImage" url="@/static/images/window_icon.png" preserveRatio="true"/>
-                            </image>
+                            <Image url="@/static/images/window_icon.png" preserveRatio="true"/>
                         </ImageView>
                     </graphic>
                 </Button>
                 <Button fx:id="close" styleClass="titleButton" focusTraversable="false" onAction="#close">
                     <graphic>
                         <ImageView fitHeight="20" fitWidth="20">
-                            <image>
-                                <Image url="@/static/images/close_icon.png" preserveRatio="true"/>
-                            </image>
+                            <Image url="@/static/images/close_icon.png" preserveRatio="true"/>
                         </ImageView>
                     </graphic>
                 </Button>

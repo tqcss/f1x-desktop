@@ -4,8 +4,6 @@ import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
@@ -32,6 +30,7 @@ public class F1xApplication extends Application {
         @Override
         public void start(Stage primaryStage) throws Exception {
                 this.primaryStage = primaryStage;
+
                 root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/app/f1xdesktop/layout.fxml")));
 
                 Font.loadFont(Objects.requireNonNull(getClass().getResource("/static/fonts/Bungee-Regular.ttf")).toExternalForm(), 12);
@@ -43,45 +42,43 @@ public class F1xApplication extends Application {
                 primaryStage.setMaximized(true);
                 primaryStage.initStyle(StageStyle.UNDECORATED);
                 primaryStage.setScene(scene);
-                primaryStage.getScene().setFill(Color.color(0.07058823529411765, 0.07058823529411765, 0.0784313725490196));
+                scene.setFill(Color.web("#121214"));
 
-                Screen screen = Screen.getPrimary();
-                Rectangle2D bounds = screen.getVisualBounds();
-                root.setScaleX(800 / bounds.getWidth());
-                root.setScaleY(600 / bounds.getHeight());
-
+                setInitialScale();
                 primaryStage.show();
 
                 restoreStageState();
                 addMinimizedListener();
         }
 
+        private void setInitialScale() {
+                Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+                root.setScaleX(800 / bounds.getWidth());
+                root.setScaleY(600 / bounds.getHeight());
+        }
+
         private void addMinimizedListener() {
-                if (primaryStage == null) { return; }
-                primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
-                        @Override
-                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                                if (newValue) { return; }
-                                restoreStageState();
-                        }
+                if (primaryStage == null) return;
+
+                primaryStage.iconifiedProperty().addListener((obs, oldVal, newVal) -> {
+                        if (!newVal) restoreStageState();
                 });
         }
 
         private void restoreStageState() {
-                if (primaryStage == null || root == null) { return; }
-                ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.15), root);
-                scaleTransition.setToX(1.0);
-                scaleTransition.setToY(1.0);
+                if (primaryStage == null || root == null) return;
 
-                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.15), root);
-                fadeTransition.setToValue(1.0);
+                FadeTransition fade = new FadeTransition(Duration.seconds(0.15), root);
+                fade.setToValue(1.0);
 
-                ParallelTransition parallelTransition = new ParallelTransition(scaleTransition, fadeTransition);
-                parallelTransition.play();
+                ScaleTransition scale = new ScaleTransition(Duration.seconds(0.15), root);
+                scale.setToX(1.0);
+                scale.setToY(1.0);
+
+                new ParallelTransition(fade, scale).play();
         }
 
         public static void main(String[] args) {
                 launch(args);
         }
-
 }

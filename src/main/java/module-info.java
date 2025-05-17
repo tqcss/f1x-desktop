@@ -7,4 +7,8 @@ module com.app.f1xdesktop {
 
     opens com.app.f1xdesktop to javafx.fxml;
     exports com.app.f1xdesktop;
+    exports com.app.f1xdesktop.utils;
+    opens com.app.f1xdesktop.utils to javafx.fxml;
+    exports com.app.f1xdesktop.controller;
+    opens com.app.f1xdesktop.controller to javafx.fxml;
 }
