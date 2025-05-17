@@ -1,0 +1,38 @@
+.titleBar {
+    -fx-background-color: #121214;
+    -fx-border-color: #1C1C1E;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-style: solid;
+}
+
+.titleBarLabel {
+    -fx-font-family: "Bungee";
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 22px;
+    -fx-padding: 6px 10px 6px 22px;
+}
+
+.titleButton {
+    -fx-background-color: transparent;
+    -fx-pref-height: 40px;
+    -fx-pref-width: 40px;
+    -fx-border-radius: 0;
+    -fx-text-fill: #FFFFFF;
+}
+
+.titleButton:hover {
+    -fx-background-color: #29292D;
+}
+
+.navButton {
+    -fx-background-color: #1D1D1E;
+    -fx-pref-width: 28px;
+    -fx-pref-height: 25px;
+    -fx-shape: "M50,0 A50,50 0 1,0 50,100 A50,50 0 1,0 50,0 Z";
+    -fx-border-radius: 50%;
+    -fx-padding: 0;
+}
+
+.navButton:hover {
+    -fx-background-color: #29292D;
+}

@@ -1,38 +1,73 @@
 package com.app.f1xdesktop;
 
-import com.app.f1xdesktop.components.ContentDisplay;
-import com.app.f1xdesktop.components.TitleBar;
+import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
+import javafx.animation.ScaleTransition;
 import javafx.application.Application;
-import javafx.geometry.Pos;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Duration;
+
+import java.util.Objects;
 
 public class F1xApplication extends Application {
 
         private static final String ADDRESS = "http://localhost:8080";
-        private static final String TITLE = "F1+X Desktop:";
+        private static final String TITLE = "F1+X: Laundry POS Application";
+
+        public static Scene scene;
+        public static VBox root;
+
+        private Stage primaryStage;
 
         @Override
-        public void start(Stage primaryStage) {
-                ContentDisplay contentDisplay = new ContentDisplay();
-                TitleBar titleBar = new TitleBar(primaryStage);
-                titleBar.setTitle(TITLE);
-                titleBar.setHeight(45);
-                titleBar.setWidth(Double.MAX_VALUE);
-                titleBar.setAlignment(Pos.CENTER_LEFT);
+        public void start(Stage primaryStage) throws Exception {
+                this.primaryStage = primaryStage;
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/app/f1xdesktop/layout.fxml")));
 
-                Handlers.ContentHandler.load(ADDRESS);
-                Handlers.DisplayHandler.display(
-                        titleBar.build(),
-                        contentDisplay.build()
-                );
+                Font.loadFont(Objects.requireNonNull(getClass().getResource("/static/fonts/Bungee-Regular.ttf")).toExternalForm(), 12);
 
-                primaryStage.setMaximized(true);
+                scene = new Scene(root, 800, 600);
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/static/css/styles.css")).toExternalForm());
+
                 primaryStage.setTitle(TITLE);
+                primaryStage.setMaximized(true);
                 primaryStage.initStyle(StageStyle.UNDECORATED);
-                primaryStage.setScene(Handlers.DisplayHandler.getRootScene());
+                primaryStage.setScene(scene);
 
                 primaryStage.show();
+
+                addMinimizedListener();
+        }
+
+        private void addMinimizedListener() {
+                if (primaryStage == null) { return; }
+                primaryStage.iconifiedProperty().addListener(new ChangeListener<Boolean>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                                if (newValue) { return; }
+                                restoreStageState();
+                        }
+                });
+        }
+
+        private void restoreStageState() {
+                if (primaryStage == null || root == null) { return; }
+                ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.15), root);
+                scaleTransition.setToX(1.0);
+                scaleTransition.setToY(1.0);
+
+                FadeTransition fadeTransition = new FadeTransition(Duration.seconds(0.15), root);
+                fadeTransition.setToValue(1.0);
+
+                ParallelTransition parallelTransition = new ParallelTransition(scaleTransition, fadeTransition);
+                parallelTransition.play();
         }
 
         public static void main(String[] args) {

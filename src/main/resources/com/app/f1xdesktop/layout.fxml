@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<?import javafx.scene.web.WebView?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.app.f1xdesktop.LayoutController"
+      fx:id="root">
+
+    <BorderPane fx:id="titleBar" styleClass="titleBar" onMousePressed="#onTitlebarPressed" onMouseDragged="#onTitlebarDrag">
+        <left>
+            <HBox alignment="CENTER_LEFT" spacing="5">
+                <Label fx:id="title" styleClass="titleBarLabel">F1+X</Label>
+                <Button styleClass="navButton" focusTraversable="false">
+                    <graphic>
+                        <ImageView fitHeight="10" fitWidth="10">
+                            <image>
+                                <Image url="@/static/images/nav_prev.png" preserveRatio="false"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button styleClass="navButton" focusTraversable="false">
+                    <graphic>
+                        <ImageView fitHeight="10" fitWidth="10">
+                            <image>
+                                <Image url="@/static/images/nav_next.png" preserveRatio="false"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </left>
+        <right>
+            <HBox alignment="CENTER_RIGHT">
+                <Button fx:id="minimize" styleClass="titleButton" focusTraversable="false" onAction="#minimize">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@/static/images/minimize_icon.png" preserveRatio="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="maximize" styleClass="titleButton" focusTraversable="false" onAction="#toggleMaximize">
+                    <graphic>
+                        <ImageView fx:id="maximizeImageView" fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image fx:id="maximizeImage" url="@/static/images/window_icon.png" preserveRatio="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="close" styleClass="titleButton" focusTraversable="false" onAction="#close">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20">
+                            <image>
+                                <Image url="@/static/images/close_icon.png" preserveRatio="true"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </right>
+    </BorderPane>
+    <WebView fx:id="contentView"/>
+</VBox>
