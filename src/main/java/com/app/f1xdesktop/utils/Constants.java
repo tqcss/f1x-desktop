@@ -22,6 +22,10 @@ public class Constants {
     // Image Resources
     public static final String FULLSCREEN_ICON_PATH = "/static/images/fullscreen_icon.png";
     public static final String WINDOW_ICON_PATH = "/static/images/window_icon.png";
+    public static final String ICON_16_PATH = "/static/icons/icon_16.png";
+    public static final String ICON_32_PATH = "/static/icons/icon_32.png";
+    public static final String ICON_48_PATH = "/static/icons/icon_48.png";
+    public static final String ICON_64_PATH = "/static/icons/icon_64.png";
 
     // Background Color
     public static final String BACKGROUND_COLOR = "#121214";

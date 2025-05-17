@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -16,6 +17,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class F1xApplication extends Application {
@@ -35,12 +38,19 @@ public class F1xApplication extends Application {
 
                 scene = new Scene(root, 800, 600);
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(Constants.CSS_PATH)).toExternalForm());
+                scene.setFill(Color.web(Constants.BACKGROUND_COLOR));
 
                 primaryStage.setTitle(Constants.TITLE);
                 primaryStage.setMaximized(true);
                 primaryStage.initStyle(StageStyle.UNDECORATED);
                 primaryStage.setScene(scene);
-                scene.setFill(Color.web(Constants.BACKGROUND_COLOR));
+
+                List<Image> icons = new ArrayList<>();
+                icons.add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.ICON_16_PATH))));
+                icons.add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.ICON_32_PATH))));
+                icons.add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.ICON_48_PATH))));
+                icons.add(new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.ICON_64_PATH))));
+                primaryStage.getIcons().addAll(icons);
 
                 setInitialScale();
                 primaryStage.show();
