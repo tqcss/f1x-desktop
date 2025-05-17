@@ -18,7 +18,7 @@
         <left>
             <HBox alignment="CENTER_LEFT" spacing="5">
                 <Label fx:id="title" styleClass="titleBarLabel">F1+X</Label>
-                <Button styleClass="navButton" focusTraversable="false">
+                <Button styleClass="navButton" focusTraversable="false" fx:id="navPrev" onAction="#navigatePrev" disable="true">
                     <graphic>
                         <ImageView fitHeight="10" fitWidth="10">
                             <image>
@@ -27,7 +27,7 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button styleClass="navButton" focusTraversable="false">
+                <Button styleClass="navButton" focusTraversable="false" fx:id="navNext" onAction="#navigateNext" disable="true">
                     <graphic>
                         <ImageView fitHeight="10" fitWidth="10">
                             <image>

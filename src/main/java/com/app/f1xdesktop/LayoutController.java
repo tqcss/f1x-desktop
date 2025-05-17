@@ -3,6 +3,8 @@ package com.app.f1xdesktop;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +19,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebHistory;
 import javafx.scene.web.WebView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -40,6 +43,12 @@ public class LayoutController implements Initializable {
     public Button close;
 
     @FXML
+    private Button navPrev;
+
+    @FXML
+    private Button navNext;
+
+    @FXML
     private ImageView maximizeImageView;
 
     @FXML
@@ -56,6 +65,8 @@ public class LayoutController implements Initializable {
     private Image fullScreenImage;
     private Image windowedImage;
 
+    private WebEngine webEngine;
+    private WebHistory history;
     private Scene scene;
     private Stage stage;
 
@@ -66,9 +77,10 @@ public class LayoutController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        WebEngine webEngine = contentView.getEngine();
+        webEngine = contentView.getEngine();
         VBox.setVgrow(contentView, Priority.ALWAYS);
         webEngine.load(Constants.getAddress());
+        history = webEngine.getHistory();
     }
 
     private Scene getScene() {
@@ -180,6 +192,29 @@ public class LayoutController implements Initializable {
         ParallelTransition parallelTransition = getParallelTransition();
         parallelTransition.setOnFinished(_ -> getStage().setIconified(true));
         parallelTransition.play();
+    }
+
+    @FXML
+    private void navigateNext(ActionEvent event) {
+        if (webEngine == null) { return; }
+        webEngine.getHistory().go(1);
+    }
+
+    @FXML
+    private void navigatePrev(ActionEvent event) {
+        if (webEngine == null) { return; }
+        webEngine.getHistory().go(-1);
+    }
+
+    private void addHistoryListeners() {
+        history.currentIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                int currentIndex = newValue.intValue();
+                navPrev.setDisable(currentIndex == 0);
+                navNext.setDisable(currentIndex == history.getEntries().size() - 1);
+            }
+        });
     }
 
 }
