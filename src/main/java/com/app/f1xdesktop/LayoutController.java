@@ -63,6 +63,8 @@ public class LayoutController implements Initializable {
 
     private double xDragOffset;
     private double yDragOffset;
+    private double currentWindowSizeX = 800;
+    private double currentWindowSizeY = 600;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -85,6 +87,7 @@ public class LayoutController implements Initializable {
 
     private void colorScene() {
         if (isSceneColored) { return; }
+        isSceneColored = true;
         getScene().setFill(Color.color(0.07058823529411765, 0.07058823529411765, 0.0784313725490196));
     }
 
@@ -135,15 +138,36 @@ public class LayoutController implements Initializable {
 
     @FXML
     private void toggleMaximize(ActionEvent event) {
+        ScaleTransition scaleTransition = new ScaleTransition(Duration.seconds(0.1), root);
+        scaleTransition.setFromX(currentWindowSizeX);
+        scaleTransition.setFromY(currentWindowSizeY);
+
         if (!isMaximized) {
             isMaximized = true;
             getStage().setMaximized(true);
             maximizeImageView.setImage(getWindowedImage());
-            return;
+
+            scaleTransition.setFromX(currentWindowSizeX / screenBounds.getWidth());
+            scaleTransition.setFromY(currentWindowSizeY / screenBounds.getHeight());
+            scaleTransition.setToX(1.0);
+            scaleTransition.setToY(1.0);
+        } else {
+            isMaximized = false;
+            maximizeImageView.setImage(getFullscreenImage());
+
+            scaleTransition.setFromX(1.0);
+            scaleTransition.setFromY(1.0);
+            scaleTransition.setToX(currentWindowSizeX / screenBounds.getWidth());
+            scaleTransition.setToY(currentWindowSizeY / screenBounds.getHeight());
+
+            scaleTransition.setOnFinished(_ -> {
+                root.setScaleX(1.0);
+                root.setScaleY(1.0);
+                getStage().setMaximized(false);
+            });
         }
-        isMaximized = false;
-        getStage().setMaximized(false);
-        maximizeImageView.setImage(getFullscreenImage());
+
+        scaleTransition.play();
     }
 
     @FXML
