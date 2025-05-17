@@ -1,11 +1,13 @@
 package com.app.f1xdesktop.controller;
 
 import com.app.f1xdesktop.handlers.ConnectionHandler;
+import com.app.f1xdesktop.handlers.HistoryHandler;
 import com.app.f1xdesktop.utils.Constants;
 import com.app.f1xdesktop.utils.UIUtils;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
-import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Rectangle2D;
@@ -23,14 +25,10 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class LayoutController implements Initializable {
 
@@ -45,20 +43,26 @@ public class LayoutController implements Initializable {
     private double xDragOffset, yDragOffset;
 
     private ConnectionHandler connectionHandler;
+    private HistoryHandler historyHandler;
     private Image fullScreenImage, windowedImage;
-    private WebEngine webEngine;
-    private WebHistory history;
 
     private final Rectangle2D screenBounds = Constants.SCREEN_BOUNDS;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        webEngine = contentView.getEngine();
-        connectionHandler = new ConnectionHandler(webEngine);
-        VBox.setVgrow(contentView, Priority.ALWAYS);
+        WebEngine webEngine = contentView.getEngine();
+        BooleanProperty connectedStatus = new SimpleBooleanProperty(false);
+        connectionHandler = new ConnectionHandler(webEngine, connectedStatus);
+        historyHandler = new HistoryHandler(webEngine, webEngine.getHistory(), navNext, navPrev);
 
+        VBox.setVgrow(contentView, Priority.ALWAYS);
         connectionHandler.loadWebViewContent();
-        history = webEngine.getHistory();
+
+        if (connectedStatus.get()) {
+            historyHandler.addHistoryListeners();
+        } else {
+            historyHandler.waitFor(connectedStatus);
+        }
     }
 
     @FXML private void close() {
@@ -109,37 +113,31 @@ public class LayoutController implements Initializable {
     }
 
     @FXML private void onTitlebarPressed(MouseEvent e) {
-        if (!isMaximized) {
-            xDragOffset = e.getSceneX();
-            yDragOffset = e.getSceneY();
-        }
+        if (isMaximized) { return; }
+        xDragOffset = e.getSceneX();
+        yDragOffset = e.getSceneY();
     }
 
     @FXML private void onTitlebarDrag(MouseEvent e) {
-        if (!isMaximized) {
-            getStage().setX(e.getScreenX() - xDragOffset);
-            getStage().setY(e.getScreenY() - yDragOffset);
-        }
+        if (isMaximized) { return; }
+        getStage().setX(e.getScreenX() - xDragOffset);
+        getStage().setY(e.getScreenY() - yDragOffset);
     }
 
     @FXML private void navigateNext() {
-        if (history.getCurrentIndex() < history.getEntries().size() - 1) {
-            history.go(1);
-        }
+        WebHistory history = historyHandler.getHistory();
+
+        if (history.getCurrentIndex() >= history.getEntries().size() - 1) { return; }
+        history.go(1);
+        // historyHandler.reloadCurrentPage();
     }
 
     @FXML private void navigatePrev() {
-        if (history.getCurrentIndex() > 0) {
-            history.go(-1);
-        }
-    }
+        WebHistory history = historyHandler.getHistory();
 
-    private void addHistoryListeners() {
-        history.currentIndexProperty().addListener((observable, oldValue, newValue) -> {
-            int currentIndex = newValue.intValue();
-            navPrev.setDisable(currentIndex == 0);
-            navNext.setDisable(currentIndex >= history.getEntries().size() - 1);
-        });
+        if (history.getCurrentIndex() <= 0) { return; }
+        history.go(-1);
+        // historyHandler.reloadCurrentPage();
     }
 
     private Stage getStage() {
@@ -147,16 +145,14 @@ public class LayoutController implements Initializable {
     }
 
     private Image getFullscreenImage() {
-        if (fullScreenImage == null) {
-            fullScreenImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.FULLSCREEN_ICON_PATH)));
-        }
+        if (fullScreenImage != null) { return fullScreenImage; }
+        fullScreenImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.FULLSCREEN_ICON_PATH)));
         return fullScreenImage;
     }
 
     private Image getWindowedImage() {
-        if (windowedImage == null) {
-            windowedImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.WINDOW_ICON_PATH)));
-        }
+        if (windowedImage != null) { return windowedImage; }
+        windowedImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Constants.WINDOW_ICON_PATH)));
         return windowedImage;
     }
 }

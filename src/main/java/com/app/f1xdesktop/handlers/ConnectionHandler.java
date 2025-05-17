@@ -2,6 +2,7 @@ package com.app.f1xdesktop.handlers;
 
 import com.app.f1xdesktop.utils.Constants;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.web.WebEngine;
 
 import java.io.IOException;
@@ -13,13 +14,13 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionHandler {
 
+    private final BooleanProperty connectedStatus;
     private ScheduledExecutorService scheduler;
     private final WebEngine webEngine;
 
-    public boolean connectionEstablished = false;
-
-    public ConnectionHandler(WebEngine webEngine) {
+    public ConnectionHandler(WebEngine webEngine, BooleanProperty connectedStatus) {
         this.webEngine = webEngine;
+        this.connectedStatus = connectedStatus;
     }
 
     public ScheduledExecutorService getScheduler() { return scheduler; }
@@ -32,7 +33,8 @@ public class ConnectionHandler {
 
             if (connection.getResponseCode() == 200) {
                 webEngine.load(Constants.ADDRESS);
-                connectionEstablished = true;
+                connectedStatus.set(true);
+                return;
                 // addHistoryListeners();
             } else {
                 loadFallback();
@@ -63,19 +65,19 @@ public class ConnectionHandler {
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(Constants.ADDRESS).openConnection();
-                connection.setConnectTimeout(1500);
+                connection.setConnectTimeout(Constants.CONNECTION_TIMEOUT_MS);
                 connection.connect();
 
                 if (connection.getResponseCode() == 200) {
                     Platform.runLater(() -> webEngine.load(Constants.ADDRESS));
                     scheduler.shutdown(); // stop polling once successful
-                    connectionEstablished = true;
+                    connectedStatus.set(true);
                     // addHistoryListeners();
                 }
             } catch (IOException ignored) {
                 // still offline, keep polling
             }
-        }, Constants.POLLING_DELAY, Constants.POLLING_PERIOD, TimeUnit.SECONDS);
+        }, Constants.POLLING_DELAY_SEC, Constants.POLLING_PERIOD_SEC, TimeUnit.SECONDS);
     }
 
 }

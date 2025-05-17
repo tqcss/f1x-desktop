@@ -34,7 +34,8 @@ public class Constants {
     public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
 
     // Polling timing
-    public static final long POLLING_DELAY = 3;
-    public static final long POLLING_PERIOD = 10; // check connection every 10 secs
+    public static final long POLLING_DELAY_SEC = 3;
+    public static final long POLLING_PERIOD_SEC = 10; // check connection every 10 secs
+    public static final int CONNECTION_TIMEOUT_MS = 1500;
 
 }
