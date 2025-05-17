@@ -42,8 +42,6 @@ public class LayoutController implements Initializable {
 
     private boolean isMaximized = true;
     private double xDragOffset, yDragOffset;
-    private double currentWindowSizeX = Constants.WIDTH;
-    private double currentWindowSizeY = Constants.HEIGHT;
 
     private ScheduledExecutorService scheduler;
     private Image fullScreenImage, windowedImage;
@@ -64,7 +62,7 @@ public class LayoutController implements Initializable {
     private void loadWebViewContent() {
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(Constants.ADDRESS).openConnection();
-            connection.setConnectTimeout(1500); // 1.5 second timeout
+            connection.setConnectTimeout(1500);
             connection.connect();
 
             if (connection.getResponseCode() == 200) {
@@ -76,16 +74,20 @@ public class LayoutController implements Initializable {
             loadFallback();
         }
 
-        // Start polling in background to check for remote availability
+        // start polling in background to check for remote availability
         pollForRemoteServer();
     }
 
     private void loadFallback() {
-        URL fallbackUrl = getClass().getResource("/com/app/f1xdesktop/fallback.html");
+        URL fallbackUrl = getClass().getResource(Constants.FALLBACK_UI_PATH);
         if (fallbackUrl != null) {
             webEngine.load(fallbackUrl.toExternalForm());
         } else {
-            webEngine.loadContent("<h1>Offline Mode</h1><p>Unable to load fallback page.</p>");
+            webEngine.loadContent("""
+                    <h1>Offline Mode</h1>
+                    <p>Unable to load fallback page.</p>
+                    """
+            );
         }
     }
 
@@ -104,7 +106,7 @@ public class LayoutController implements Initializable {
             } catch (IOException ignored) {
                 // still offline, keep polling
             }
-        }, 3, 5, TimeUnit.SECONDS); // initial delay 3s, check every 5s
+        }, Constants.POLLING_DELAY, Constants.POLLING_PERIOD, TimeUnit.SECONDS);
     }
 
     @FXML private void close() {
@@ -130,8 +132,8 @@ public class LayoutController implements Initializable {
             getStage().setMaximized(true);
             maximizeImageView.setImage(getWindowedImage());
 
-            scaleTransition.setFromX(currentWindowSizeX / screenBounds.getWidth());
-            scaleTransition.setFromY(currentWindowSizeY / screenBounds.getHeight());
+            scaleTransition.setFromX(Constants.WIDTH / screenBounds.getWidth());
+            scaleTransition.setFromY(Constants.HEIGHT / screenBounds.getHeight());
             scaleTransition.setToX(1.0);
             scaleTransition.setToY(1.0);
         } else {
@@ -140,8 +142,8 @@ public class LayoutController implements Initializable {
 
             scaleTransition.setFromX(1.0);
             scaleTransition.setFromY(1.0);
-            scaleTransition.setToX(currentWindowSizeX / screenBounds.getWidth());
-            scaleTransition.setToY(currentWindowSizeY / screenBounds.getHeight());
+            scaleTransition.setToX(Constants.WIDTH / screenBounds.getWidth());
+            scaleTransition.setToY(Constants.HEIGHT / screenBounds.getHeight());
 
             scaleTransition.setOnFinished(_ -> {
                 root.setScaleX(1.0);

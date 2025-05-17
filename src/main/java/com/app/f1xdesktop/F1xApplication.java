@@ -1,5 +1,6 @@
 package com.app.f1xdesktop;
 
+import com.app.f1xdesktop.utils.Constants;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.ScaleTransition;
@@ -19,9 +20,6 @@ import java.util.Objects;
 
 public class F1xApplication extends Application {
 
-        private static final String ADDRESS = "http://localhost:8080";
-        private static final String TITLE = "F1+X: Laundry POS Application";
-
         public static Scene scene;
         public static VBox root;
 
@@ -31,18 +29,18 @@ public class F1xApplication extends Application {
         public void start(Stage primaryStage) throws Exception {
                 this.primaryStage = primaryStage;
 
-                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/app/f1xdesktop/layout.fxml")));
+                root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(Constants.UI_LAYOUT_PATH)));
 
-                Font.loadFont(Objects.requireNonNull(getClass().getResource("/static/fonts/Bungee-Regular.ttf")).toExternalForm(), 12);
+                Font.loadFont(Objects.requireNonNull(getClass().getResource(Constants.FONT_PATH)).toExternalForm(), 12);
 
                 scene = new Scene(root, 800, 600);
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/static/css/styles.css")).toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(Constants.CSS_PATH)).toExternalForm());
 
-                primaryStage.setTitle(TITLE);
+                primaryStage.setTitle(Constants.TITLE);
                 primaryStage.setMaximized(true);
                 primaryStage.initStyle(StageStyle.UNDECORATED);
                 primaryStage.setScene(scene);
-                scene.setFill(Color.web("#121214"));
+                scene.setFill(Color.web(Constants.BACKGROUND_COLOR));
 
                 setInitialScale();
                 primaryStage.show();
@@ -53,8 +51,8 @@ public class F1xApplication extends Application {
 
         private void setInitialScale() {
                 Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-                root.setScaleX(800 / bounds.getWidth());
-                root.setScaleY(600 / bounds.getHeight());
+                root.setScaleX(Constants.WIDTH / bounds.getWidth());
+                root.setScaleY(Constants.HEIGHT / bounds.getHeight());
         }
 
         private void addMinimizedListener() {

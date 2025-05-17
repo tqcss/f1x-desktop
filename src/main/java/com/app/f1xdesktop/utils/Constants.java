@@ -7,7 +7,7 @@ public class Constants {
 
     // Application Settings
     public static final String ADDRESS = "http://localhost:8080";
-    public static final String TITLE = "F1+X: Laundry POS Application";
+    public static final String TITLE = "F1+X";
 
     // Default Window Size
     public static final double WIDTH = 800;
@@ -16,6 +16,8 @@ public class Constants {
     // Style and Resources
     public static final String FONT_PATH = "/static/fonts/Bungee-Regular.ttf";
     public static final String CSS_PATH = "/static/css/styles.css";
+    public static final String UI_LAYOUT_PATH = "/com/app/f1xdesktop/layout.fxml";
+    public static final String FALLBACK_UI_PATH = "/com/app/f1xdesktop/fallback.html";
 
     // Image Resources
     public static final String FULLSCREEN_ICON_PATH = "/static/images/fullscreen_icon.png";
@@ -26,5 +28,9 @@ public class Constants {
 
     // Screen Bounds
     public static final Rectangle2D SCREEN_BOUNDS = Screen.getPrimary().getVisualBounds();
+
+    // Polling timing
+    public static final long POLLING_DELAY = 3;
+    public static final long POLLING_PERIOD = 10; // check connection every 10 secs
 
 }
