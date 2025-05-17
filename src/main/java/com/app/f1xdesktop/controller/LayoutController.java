@@ -1,5 +1,6 @@
 package com.app.f1xdesktop.controller;
 
+import com.app.f1xdesktop.handlers.ConnectionHandler;
 import com.app.f1xdesktop.utils.Constants;
 import com.app.f1xdesktop.utils.UIUtils;
 import javafx.animation.ParallelTransition;
@@ -43,7 +44,7 @@ public class LayoutController implements Initializable {
     private boolean isMaximized = true;
     private double xDragOffset, yDragOffset;
 
-    private ScheduledExecutorService scheduler;
+    private ConnectionHandler connectionHandler;
     private Image fullScreenImage, windowedImage;
     private WebEngine webEngine;
     private WebHistory history;
@@ -53,65 +54,17 @@ public class LayoutController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         webEngine = contentView.getEngine();
+        connectionHandler = new ConnectionHandler(webEngine);
         VBox.setVgrow(contentView, Priority.ALWAYS);
 
-        loadWebViewContent();
+        connectionHandler.loadWebViewContent();
         history = webEngine.getHistory();
-    }
-
-    private void loadWebViewContent() {
-        try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(Constants.ADDRESS).openConnection();
-            connection.setConnectTimeout(1500);
-            connection.connect();
-
-            if (connection.getResponseCode() == 200) {
-                webEngine.load(Constants.ADDRESS);
-            } else {
-                loadFallback();
-            }
-        } catch (IOException e) {
-            loadFallback();
-        }
-
-        // start polling in background to check for remote availability
-        pollForRemoteServer();
-    }
-
-    private void loadFallback() {
-        URL fallbackUrl = getClass().getResource(Constants.FALLBACK_UI_PATH);
-        if (fallbackUrl != null) {
-            webEngine.load(fallbackUrl.toExternalForm());
-        } else {
-            webEngine.loadContent("""
-                    <h1>Offline Mode</h1>
-                    <p>Unable to load fallback page.</p>
-                    """
-            );
-        }
-    }
-
-    private void pollForRemoteServer() {
-        scheduler = Executors.newSingleThreadScheduledExecutor();
-        scheduler.scheduleAtFixedRate(() -> {
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(Constants.ADDRESS).openConnection();
-                connection.setConnectTimeout(1500);
-                connection.connect();
-
-                if (connection.getResponseCode() == 200) {
-                    Platform.runLater(() -> webEngine.load(Constants.ADDRESS));
-                    scheduler.shutdown(); // stop polling once successful
-                }
-            } catch (IOException ignored) {
-                // still offline, keep polling
-            }
-        }, Constants.POLLING_DELAY, Constants.POLLING_PERIOD, TimeUnit.SECONDS);
     }
 
     @FXML private void close() {
         ParallelTransition transition = UIUtils.getCloseTransition(root);
         transition.setOnFinished(e -> {
+            ScheduledExecutorService scheduler = connectionHandler.getScheduler();
             if (scheduler != null) { scheduler.shutdownNow(); }
             getStage().close();
         });
